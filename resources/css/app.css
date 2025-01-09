@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Dashboard styles */
+.sidebar {
+    min-height: 100vh;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+
+.sidebar .nav-link {
+    color: #333;
+    padding: .5rem 1rem;
+}
+
+.sidebar .nav-link.active {
+    color: #2470dc;
+}
+
+/* Main content area */
+main {
+    padding-top: 1.5rem;
+}
+
+/* Custom utility classes */
+.cursor-pointer {
+    cursor: pointer;
+}
