@@ -1,4 +1,4 @@
-{{-- resources/views/tasks/partials/create-modal.blade.php --}}
+
 <div class="modal fade" id="createTaskModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">

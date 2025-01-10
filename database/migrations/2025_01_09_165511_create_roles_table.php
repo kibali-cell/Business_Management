@@ -9,16 +9,15 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    // database/migrations/xxxx_xx_xx_create_roles_table.php
-public function up()
-{
-    Schema::create('roles', function (Blueprint $table) {
-        $table->id();
-        $table->string('name');     // e.g., 'Administrator'
-        $table->string('slug');     // e.g., 'admin'
-        $table->timestamps();
-    });
-}
+    public function up(): void
+    {
+        Schema::create('roles', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');     // e.g., 'Administrator'
+            $table->string('slug');     // e.g., 'admin'
+            $table->timestamps();
+        });
+    }
 
     /**
      * Reverse the migrations.

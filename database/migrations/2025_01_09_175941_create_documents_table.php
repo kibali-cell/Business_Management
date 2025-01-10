@@ -13,13 +13,11 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
-        $table->string('title');
-        $table->text('description')->nullable();
-        $table->foreignId('assigned_to')->constrained('users');
-        $table->string('status')->default('pending');
-        $table->string('priority')->default('medium');
-        $table->date('due_date')->nullable();
-        $table->timestamps();
+            $table->foreignId('task_id')->constrained()->onDelete('cascade');
+            $table->string('filename');
+            $table->string('path');
+            $table->foreignId('uploaded_by')->constrained('users');
+            $table->timestamps();
         });
     }
 

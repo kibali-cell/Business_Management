@@ -16,6 +16,7 @@ return new class extends Migration
         $table->string('title');
         $table->text('description')->nullable();
         $table->foreignId('assigned_to')->constrained('users');
+        $table->foreignId('created_by')->constrained('users');
         $table->string('status')->default('pending');
         $table->string('priority')->default('medium');
         $table->date('due_date')->nullable();
