@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <div class="row">
         <!-- Folder Sidebar -->
-        <div class="col-md-3">
+        <div class="col-md-3 mb-3">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Folders</h5>
@@ -62,8 +62,8 @@
                                     </td>
                                     <td>{{ $document->updated_at->diffForHumans() }}</td>
                                     <td>
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-outline-primary" 
+                                        <div class="btn-group d-flex gap-1 overflow-auto" style="white-space: nowrap;">
+                                            <button class="btn btn-sm btn-outline-primary"
                                                     onclick="previewDocument({{ $document->id }})">
                                                 Preview
                                             </button>

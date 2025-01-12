@@ -48,6 +48,9 @@ Route::middleware(['auth'])->group(function () {
          Route::prefix('documents')->name('documents.')->group(function () {
             Route::resource('folders', FolderController::class)->only(['store', 'index']);
         });
+
+        Route::get('/documents/{document}/preview', [DocumentController::class, 'preview'])->name('documents.preview');
+
 });
 
 // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
