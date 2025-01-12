@@ -38,33 +38,103 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // public/js/tasks.js
-function editTask(taskId) {
-    fetch(`/tasks/${taskId}/edit`)
-        .then(response => response.json())
-        .then(task => {
-            const modal = document.getElementById('editTaskModal');
-            const form = modal.querySelector('form');
+    window.editTask = function(taskId) {
+        const modal = document.getElementById('editTaskModal');
+        if (!modal) {
+            console.error('Edit task modal not found in the DOM');
+            showNotification('Unable to edit task - modal not found', 'error');
+            return;
+        }
+    
+        fetch(`/tasks/${taskId}/edit`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(task => {
+                const form = modal.querySelector('form');
+                if (!form) {
+                    throw new Error('Form not found in modal');
+                }
+    
+                try {
+                    // Fill form fields with error handling for each field
+                    const fields = {
+                        title: task.title,
+                        description: task.description,
+                        priority: task.priority,
+                        due_date: task.due_date,
+                        assigned_to: task.assigned_to // Changed from assignee_id to assigned_to
+                    };
+    
+                    for (const [fieldName, value] of Object.entries(fields)) {
+                        const field = form.querySelector(`[name="${fieldName}"]`);
+                        if (field) {
+                            field.value = value || '';
+                        } else {
+                            console.warn(`Field ${fieldName} not found in form`);
+                        }
+                    }
+    
+                    // Set up form submission
+                    form.onsubmit = function(e) {
+                        e.preventDefault();
+                        const formData = new FormData(form);
+                        formData.append('_method', 'PUT');
+                        updateTask(taskId, formData);
+                    };
+    
+                    // Show modal
+                    const modalInstance = new bootstrap.Modal(modal);
+                    modalInstance.show();
+                } catch (error) {
+                    console.error('Error populating form:', error);
+                    showNotification('Error preparing edit form', 'error');
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching task data:', error);
+                showNotification('Failed to load task data', 'error');
+            });
+    };
+    
+    // Update the updateTaskCard function to match the response data structure
+     window.updateTaskCard =  function(task) {
+        const card = document.querySelector(`[data-task-id="${task.id}"]`);
+        if (card) {
+            card.querySelector('.card-title').textContent = task.title;
+            card.querySelector('.card-text').textContent = task.description || '';
             
-            // Fill form fields
-            form.querySelector('[name="title"]').value = task.title;
-            // Fill other fields...
+            // Update priority badge
+            const badge = card.querySelector('.badge');
+            badge.className = `badge bg-${task.priority === 'high' ? 'danger' : (task.priority === 'medium' ? 'warning' : 'info')}`;
+            badge.textContent = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
             
-            form.onsubmit = function(e) {
-                e.preventDefault();
-                updateTask(taskId, new FormData(form));
-            };
+            // Update due date
+            const dueDate = new Date(task.due_date).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+            card.querySelector('small').textContent = `Due: ${dueDate}`;
             
-            new bootstrap.Modal(modal).show();
-        });
-}
+            // Update assignee
+            if (task.assignee) {
+                card.querySelector('.text-muted').textContent = `Assigned to: ${task.assignee.name}`;
+            }
+        }
+    }
 
 // Edit Task
-function updateTask(taskId, formData) {
+window.updateTask = function(taskId, formData) {
     fetch(`/tasks/${taskId}`, {
         method: 'POST',
         body: formData,
         headers: {
             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            
         }
     })
     .then(response => response.json())
@@ -103,10 +173,34 @@ function updateTask(taskId, formData) {
             });
         }
     };
+
+// Helper function for notifications if not already defined
+ window.showNotification = function(message, type = 'success') {
+    const notificationTypes = {
+        success: 'background-color: #d4edda; color: #155724',
+        error: 'background-color: #f8d7da; color: #721c24'
+    };
+
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px;
+        border-radius: 4px;
+        z-index: 9999;
+        ${notificationTypes[type] || notificationTypes.success}
+    `;
+
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+}
+
 });
 
-// Helper function for notifications
-function showNotification(message, type = 'success') {
-    // You can use any notification library here, or create a simple one
-    alert(message);
-}
+// // Helper function for notifications
+// function showNotification(message, type = 'success') {
+//     // You can use any notification library here, or create a simple one
+//     alert(message);
+// }

@@ -1,8 +1,10 @@
 <?php
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\FolderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -27,10 +29,28 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
     Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])
         ->name('tasks.update-status');
+
+
+        Route::post('/tasks/{task}/documents', [TaskController::class, 'attachDocument'])
+     ->name('tasks.attach_document');
+Route::delete('/tasks/{task}/documents/{document}', [TaskController::class, 'detachDocument'])
+     ->name('tasks.detach_document');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+    Route::post('/documents/{document}/version', [DocumentController::class, 'addVersion'])
+         ->name('documents.version');
+    Route::get('/documents/{document}/download', [DocumentController::class, 'download'])
+         ->name('documents.download');
 
-Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+         Route::prefix('documents')->name('documents.')->group(function () {
+            Route::resource('folders', FolderController::class)->only(['store', 'index']);
+        });
+});
+
+// Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 Route::middleware(['auth'])->group(function () {
     Route::prefix('crm')->name('crm.')->group(function () {

@@ -6,7 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
 {
-    protected $fillable = ['task_id', 'filename', 'path', 'uploaded_by'];
+
+    protected $fillable = [
+        'title',
+        'description',
+        'filename',
+        'path',
+        'file_type',
+        'file_size',
+        'task_id',
+        'folder_id',
+        'uploaded_by',
+        'is_public',
+        'version'
+    ];
 
     public function task()
     {
@@ -16,5 +29,15 @@ class Document extends Model
     public function uploader()
     {
         return $this->belongsTo(User::class, 'uploaded_by');
+    }
+
+    public function folder()
+    {
+        return $this->belongsTo(Folder::class);
+    }
+
+    public function versions()
+    {
+        return $this->hasMany(DocumentVersion::class)->orderBy('version_number', 'desc');
     }
 }

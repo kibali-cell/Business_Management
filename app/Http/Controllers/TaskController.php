@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\User;
+use App\Models\Folder;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -54,9 +55,9 @@ class TaskController extends Controller
         $validated = $request->validate([
             'title' => 'required|max:255',
             'description' => 'nullable',
-            'assigned_to' => 'required|exists:users,id',
             'priority' => 'required|in:low,medium,high',
-            'due_date' => 'required|date'
+            'due_date' => 'required|date',
+            'assigned_to' => 'required|exists:users,id',
         ]);
 
         $task->update($validated);
@@ -64,7 +65,31 @@ class TaskController extends Controller
         // Send notification to assigned user
         $task->assignee->notify(new TaskUpdatedNotification($task));
 
+        // Handle document uploads if any
+    if ($request->hasFile('documents')) {
+        foreach ($request->file('documents') as $file) {
+            $path = $file->store('task-documents', 'public');
+            $task->documents()->create([
+                'filename' => $file->getClientOriginalName(),
+                'path' => $path
+            ]);
+        }
+    }
+
         return response()->json(['success' => true, 'task' => $task->fresh()->load('assignee')]);
+    }
+
+        public function attachDocument(Task $task, Request $request)
+    {
+        $validated = $request->validate(['document_id' => 'required|exists:documents,id']);
+        $task->documents()->attach($validated['document_id']);
+        return back()->with('success', 'Document attached successfully');
+    }
+
+    public function detachDocument(Task $task, Document $document)
+    {
+        $task->documents()->detach($document->id);
+        return back()->with('success', 'Document detached successfully');
     }
 
     

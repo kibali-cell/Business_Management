@@ -1,20 +1,70 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
+@tailwind utilities; */
 
 /* Dashboard styles */
 .sidebar {
-    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 48px 0 0;
     box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    overflow-y: auto;
+}
+
+@media (max-width: 767.98px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        padding-top: 0;
+    }
+    
+    .sidebar-toggle {
+        display: block;
+        width: 100%;
+        padding: 0.75rem 1rem;
+        text-align: left;
+    }
+
+    #sidebarMenu {
+        background: white;
+        padding: 1rem;
+        border-bottom: 1px solid rgba(0, 0, 0, .1);
+    }
 }
 
 .sidebar .nav-link {
+    font-weight: 500;
     color: #333;
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    margin: 0.2rem 0;
+}
+
+.sidebar .nav-link:hover {
+    background-color: rgba(0, 0, 0, .05);
 }
 
 .sidebar .nav-link.active {
     color: #2470dc;
+    background-color: rgba(36, 112, 220, .1);
+}
+
+.sidebar .nav-link i {
+    color: #666;
+    margin-right: 0.5rem;
+}
+
+.sidebar .nav-link.active i {
+    color: #2470dc;
+}
+
+.sidebar-heading {
+    font-size: .75rem;
+    text-transform: uppercase;
 }
 
 /* Main content area */
@@ -26,3 +76,4 @@ main {
 .cursor-pointer {
     cursor: pointer;
 }
+

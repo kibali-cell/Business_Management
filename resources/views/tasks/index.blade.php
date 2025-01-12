@@ -11,7 +11,7 @@
 
     <div class="row">
         <!-- Pending Tasks Column -->
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
             <div class="card">
                 <div class="card-header bg-secondary text-white">
                     Pending Tasks
@@ -27,7 +27,7 @@
         </div>
 
         <!-- In Progress Column -->
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
             <div class="card">
                 <div class="card-header bg-primary text-white">
                     In Progress
@@ -43,7 +43,7 @@
         </div>
 
         <!-- Completed Column -->
-        <div class="col-md-4">
+        <div class="col-md-4 mb-3">
             <div class="card">
                 <div class="card-header bg-success text-white">
                     Completed
@@ -60,6 +60,7 @@
     </div>
 </div>
 
+@include('tasks.partials.edit-modal')
 @include('tasks.partials.create-modal')
 @endsection
 
