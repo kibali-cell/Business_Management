@@ -133,18 +133,31 @@ window.updateTask = function(taskId, formData) {
         method: 'POST',
         body: formData,
         headers: {
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-            
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+            'Accept': 'application/json'  
         }
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            return response.text().then(text => {
+                throw new Error(text);
+            });
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             // Update task card in UI
             updateTaskCard(data.task);
             bootstrap.Modal.getInstance(document.getElementById('editTaskModal')).hide();
-            showNotification('Task updated successfully');
+            showNotification('Task updated successfully', 'success');
+        } else {
+            showNotification(data.message || 'Failed to update task', 'error');
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showNotification('Failed to update task: ' + error.message, 'error');
     });
 }
 

@@ -7,18 +7,19 @@
         <div class="card-body">
             <p><strong>Version:</strong> v{{ $document->version }}</p>
             <p><strong>Last Updated:</strong> {{ $document->updated_at->format('d M Y, h:i A') }}</p>
+            <p><strong>File Exists:</strong> {{ isset($exists) ? ($exists ? 'Yes' : 'No') : 'Not checked' }}</p>
 
             @if(isset($error))
                 <p class="text-danger">{{ $error }}</p>
-            @elseif(Storage::exists($document->path))
+            @elseif(Storage::disk('public')->exists($document->path))
                 @php
                     $fileExtension = pathinfo($document->path, PATHINFO_EXTENSION);
                 @endphp
 
                 @if(in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif']))
-                    <img src="{{ asset('storage/' . $document->path) }}" alt="Preview" class="img-fluid">
+                    <img src="{{ Storage::disk('public')->url($document->path) }}" alt="Preview" class="img-fluid">
                 @elseif($fileExtension === 'pdf')
-                    <iframe src="{{ asset('storage/' . $document->path) }}" width="100%" height="600"></iframe>
+                    <iframe src="{{ Storage::disk('public')->url($document->path) }}" width="100%" height="600"></iframe>
                 @else
                     <p>Preview not available. Please <a href="{{ route('documents.download', $document) }}">download the file</a> to view its contents.</p>
                 @endif
@@ -28,7 +29,6 @@
         </div>
     </div>
 </div>
-
 
 @push('styles')
 <style>

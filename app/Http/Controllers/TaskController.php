@@ -6,6 +6,9 @@ use App\Models\User;
 use App\Models\Folder;
 use Illuminate\Http\Request;
 
+use App\Notifications\TaskUpdatedNotification;
+
+
 class TaskController extends Controller
 {
     public function index()

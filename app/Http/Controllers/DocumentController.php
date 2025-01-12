@@ -49,9 +49,17 @@ class DocumentController extends Controller
         ]);
 
         $file = $request->file('file');
+
+        // Store the file and get the path
+    $path = Storage::disk('public')->putFile('documents/' . date('Y/m'), $file);
+    
+    // For debugging, verify the file exists immediately after upload
+    if (!Storage::disk('public')->exists($path)) {
+        return back()->with('error', 'File upload failed - could not verify file existence');
+    }
         
-        // Store the file
-        $path = $file->store('documents/' . date('Y/m'), 'public');
+        // // Store the file
+        // $path = $file->store('documents/' . date('Y/m'), 'public');
 
         $document = Document::create([
             'title' => $request->title,
@@ -117,13 +125,16 @@ class DocumentController extends Controller
     };
 }
 
-    public function preview(Document $document)
+public function preview(Document $document)
 {
     $fileExtension = pathinfo($document->path, PATHINFO_EXTENSION);
     $previewType = $this->getPreviewType($fileExtension);
     
-    return view('documents.preview', compact('document', 'previewType'));
+    // Add debugging
+    $exists = Storage::disk('public')->exists($document->path);
+    $fullPath = Storage::disk('public')->path($document->path);
+    
+    return view('documents.preview', compact('document', 'previewType', 'exists', 'fullPath'));
 }
-
 
 }
