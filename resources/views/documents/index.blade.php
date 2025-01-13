@@ -53,7 +53,7 @@
                                     <td>v{{ $document->version }}</td>
                                     <td>
                                         @if($document->task)
-                                            <a href="{{ route('tasks.show', $document->task) }}">
+                                            <a href="{{ route('tasks.index', $document->task) }}">
                                                 {{ $document->task->title }}
                                             </a>
                                         @else
