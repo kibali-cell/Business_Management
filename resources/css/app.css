@@ -77,3 +77,21 @@ main {
     cursor: pointer;
 }
 
+.folder-tree .list-group-item {
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    padding-left: 0.5rem;
+}
+
+.folder-tree .list-group-item:first-child {
+    border-top: none;
+}
+
+.folder-tree .list-group-item:last-child {
+    border-bottom: none;
+}
+
+.folder-tree .dropdown-toggle::after {
+    display: none;
+}

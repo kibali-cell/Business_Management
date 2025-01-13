@@ -11,27 +11,31 @@ class DocumentController extends Controller
 {
     public function index(Request $request)
     {
+        // Get all root folders with their children and document counts
+        $folders = Folder::withCount('documents')
+            ->whereNull('parent_id')
+            ->with(['children' => function($query) {
+                $query->withCount('documents');
+            }])
+            ->orderBy('name')
+            ->get();
+
+        // Get documents for current folder or root
         $query = Document::query();
-        
-        // If folder is specified, show documents in that folder
-        if ($request->folder_id) {
-            $query->where('folder_id', $request->folder_id);
+        if ($request->has('folder')) {
+            $query->where('folder_id', $request->folder);
+            $currentFolder = Folder::findOrFail($request->folder);
         } else {
-            // Only show root documents (not in any folder)
+            $currentFolder = null;
             $query->whereNull('folder_id');
         }
+        
+        $documents = $query->latest()->paginate(15);
 
-        // If task_id is specified, show only task documents
-        if ($request->task_id) {
-            $query->where('task_id', $request->task_id);
-        }
-
-        $documents = $query->with(['folder', 'uploader'])->latest()->paginate(20);
-        $folders = Folder::whereNull('parent_id')->with('children')->get();
-
-        return view('documents.index', compact('documents', 'folders'));
+        return view('documents.index', compact('folders', 'documents', 'currentFolder'));
     }
 
+    
     public function create()
     {
         $folders = Folder::all(); // You'll need to create the Folder model
@@ -137,5 +141,15 @@ public function preview(Document $document)
     
     return view('documents.preview', compact('document', 'previewType', 'exists', 'fullPath'));
 }
+
+public function destroy($id)
+{
+    $document = Document::findOrFail($id);
+    Storage::delete($document->path); // Deletes the file
+    $document->delete(); // Deletes the record
+
+    return response()->json(['success' => true]);
+}
+
 
 }

@@ -12,6 +12,27 @@ class Folder extends Model
 {
     protected $fillable = ['name', 'parent_id', 'created_by'];
 
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($folder) {
+            $folder->slug = Str::slug($folder->name);
+            $folder->created_by = auth()->id();
+            
+            // Set path and level
+            if ($folder->parent_id) {
+                $parent = static::find($folder->parent_id);
+                $folder->path = $parent->path . '/' . $folder->slug;
+                $folder->level = $parent->level + 1;
+            } else {
+                $folder->path = $folder->slug;
+                $folder->level = 0;
+            }
+        });
+    }
+
+    // Relationships
     public function parent()
     {
         return $this->belongsTo(Folder::class, 'parent_id');
@@ -32,18 +53,27 @@ class Folder extends Model
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    // Get all ancestors of a folder
-    public function ancestors()
+    // Helper methods
+    public function getFullPathAttribute()
     {
-        $ancestors = collect([]);
-        $parent = $this->parent;
+        return explode('/', $this->path);
+    }
+
+    public function getBreadcrumbAttribute()
+    {
+        $paths = $this->full_path;
+        $breadcrumb = [];
+        $currentPath = '';
         
-        while ($parent) {
-            $ancestors->push($parent);
-            $parent = $parent->parent;
+        foreach ($paths as $path) {
+            $currentPath .= ($currentPath ? '/' : '') . $path;
+            $breadcrumb[] = [
+                'name' => $path,
+                'path' => $currentPath
+            ];
         }
         
-        return $ancestors->reverse();
+        return $breadcrumb;
     }
 }
 

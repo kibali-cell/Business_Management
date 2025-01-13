@@ -31,6 +31,35 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     };
 
+    //delete document
+    window.deleteDocument = function(documentId) {
+        if (confirm('Are you sure you want to delete this document?')) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    
+            fetch(`/documents/${documentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Document deleted successfully');
+                    // Optionally, remove the document item from the DOM
+                    document.querySelector(`.document-item[data-id="${documentId}"]`).remove();
+                } else {
+                    alert('Failed to delete document');
+                }
+            })
+            .catch(error => {
+                console.error('Error deleting document:', error);
+                alert('An error occurred');
+            });
+        }
+    }
+    
+
     document.addEventListener('DOMContentLoaded', function() {
         // Handle version modal
         const versionModal = document.getElementById('versionModal');

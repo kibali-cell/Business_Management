@@ -15,14 +15,16 @@
     <input type="file" name="documents[]" class="form-control" multiple>
     <div id="documentsList" class="mt-2">
         @foreach($task->documents as $document)
-            <div class="document-item">
-                <a href="{{ Storage::url($document->path) }}" target="_blank">
-                    {{ $document->filename }}
-                </a>
-                <button type="button" onclick="deleteDocument({{ $document->id }})" class="btn btn-sm btn-danger">
-                    Delete
-                </button>
-            </div>
+
+        <div class="document-item" data-id="{{ $document->id }}">
+            <a href="{{ Storage::url($document->path) }}" target="_blank">
+                {{ $document->filename }}
+            </a>
+            <button type="button" onclick="deleteDocument({{ $document->id }})" class="btn btn-sm btn-danger">
+                Delete
+            </button>
+        </div>
+
         @endforeach
     </div>
 </div>
