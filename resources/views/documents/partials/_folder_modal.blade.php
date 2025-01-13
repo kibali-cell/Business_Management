@@ -5,6 +5,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <form id="newFolderForm">
+                @csrf
                 <div class="modal-header">
                     <h5 class="modal-title">Create New Folder</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -25,6 +26,7 @@
                             @endforeach
                         </select>
                     </div>
+                    <div id="folderError" class="alert alert-danger mt-3" style="display: none;"></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -34,3 +36,55 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const newFolderForm = document.getElementById('newFolderForm');
+    const newFolderModal = new bootstrap.Modal(document.getElementById('newFolderModal'));
+    const errorDiv = document.getElementById('folderError');
+
+    newFolderForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        errorDiv.style.display = 'none';
+        
+        const formData = new FormData(this);
+        
+        try {
+            const response = await fetch('/folders', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: formData.get('name'),
+                    parent_id: formData.get('parent_id')
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                newFolderModal.hide();
+                window.location.reload();
+            } else {
+                errorDiv.textContent = data.message || 'Error creating folder';
+                errorDiv.style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            errorDiv.textContent = 'An error occurred while creating the folder';
+            errorDiv.style.display = 'block';
+        }
+    });
+
+    // Clear form and errors when modal is hidden
+    document.getElementById('newFolderModal').addEventListener('hidden.bs.modal', function () {
+        newFolderForm.reset();
+        errorDiv.style.display = 'none';
+    });
+});
+</script>
+@endpush

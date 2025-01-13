@@ -22,30 +22,53 @@ class FolderController extends Controller
     ->orderBy('name')
     ->get();
 
-return view('folders.index', compact('allFolders'));
+    return view('folders.index', compact('allFolders'));
 
         // return view('folders.index', compact('rootFolders'));
     }
 
     public function store(Request $request)
     {
-        // Validate the incoming request
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'parent_id' => 'nullable|exists:folders,id'
-        ]);
+        try {
+            // Validate the incoming request
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'parent_id' => 'nullable|exists:folders,id'
+            ]);
 
-        // Create a new folder
-        $folder = Folder::create([
-            'name' => $request->name,
-            'parent_id' => $request->parent_id
-        ]);
+            // Generate the slug
+            $slug = Str::slug($request->name);
 
-        return response()->json([
-            'success' => true,
-            'folder' => $folder
-        ]);
+            // Build the path
+            $path = $slug;
+            if ($request->parent_id) {
+                $parent = Folder::findOrFail($request->parent_id);
+                $path = $parent->path . '/' . $slug;
+            }
+
+            // Create the folder
+            $folder = Folder::create([
+                'name' => $request->name,
+                'parent_id' => $request->parent_id,
+                'slug' => $slug,
+                'path' => $path
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'folder' => $folder
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Folder creation error: ' . $e->getMessage());
+            
+            return response()->json([
+                'success' => false,
+                'message' => 'Error creating folder: ' . $e->getMessage()
+            ], 500);
+        }
     }
+
 
     public function update(Request $request, Folder $folder)
     {

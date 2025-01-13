@@ -59,6 +59,19 @@ class Folder extends Model
         return explode('/', $this->path);
     }
 
+    public function getLevelAttribute()
+    {
+        $level = 0;
+        $parent = $this->parent;
+        
+        while ($parent) {
+            $level++;
+            $parent = $parent->parent;
+        }
+        
+        return $level;
+    }
+
     public function getBreadcrumbAttribute()
     {
         $paths = $this->full_path;
