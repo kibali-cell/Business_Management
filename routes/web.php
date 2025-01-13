@@ -52,9 +52,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/documents/{document}/preview', [DocumentController::class, 'preview'])->name('documents.preview');
 });
 
-Route::middleware(['auth'])->group(function () {
-    Route::resource('folders', FolderController::class);
-});
+// Route::middleware(['auth'])->group(function () {
+//     Route::resource('folders', FolderController::class);
+// });
 
 // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 

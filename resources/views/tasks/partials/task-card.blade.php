@@ -12,7 +12,6 @@
 
         <div class="mb-3">
     <label class="form-label">Attachments</label>
-    <input type="file" name="documents[]" class="form-control" multiple>
     <div id="documentsList" class="mt-2">
         @foreach($task->documents as $document)
 
