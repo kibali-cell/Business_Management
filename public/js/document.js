@@ -41,11 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 const form = this.querySelector('#versionForm');
                 form.action = form.action.replace(':document_id', documentId);
             });
-        }
-    
-        // Preview document function
-        window.previewDocument = function(documentId) {
-            window.open(`/documents/${documentId}/preview`, '_blank');
-        };
+        } 
     });
 });

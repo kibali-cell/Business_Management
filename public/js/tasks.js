@@ -211,9 +211,3 @@ window.updateTask = function(taskId, formData) {
 }
 
 });
-
-// // Helper function for notifications
-// function showNotification(message, type = 'success') {
-//     // You can use any notification library here, or create a simple one
-//     alert(message);
-// }

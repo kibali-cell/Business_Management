@@ -39,43 +39,44 @@ class DocumentController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'file' => 'required|file|max:10240', // 10MB max
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'folder_id' => 'nullable|exists:folders,id',
-            'task_id' => 'nullable|exists:tasks,id'
-        ]);
+{
+    $request->validate([
+        'file' => 'required|file|max:10240', // 10MB max
+        'title' => 'required|string|max:255',
+        'description' => 'nullable|string',
+        'folder_id' => 'nullable|exists:folders,id',
+        'task_id' => 'nullable|exists:tasks,id'
+    ]);
 
-        $file = $request->file('file');
+    $file = $request->file('file');
+    $fileSize = $file->getSize();  // Get the file size
 
-        // Store the file and get the path
+    // Store the file and get the path
     $path = Storage::disk('public')->putFile('documents/' . date('Y/m'), $file);
-    
+
     // For debugging, verify the file exists immediately after upload
     if (!Storage::disk('public')->exists($path)) {
         return back()->with('error', 'File upload failed - could not verify file existence');
     }
-        
-        // // Store the file
-        // $path = $file->store('documents/' . date('Y/m'), 'public');
 
-        $document = Document::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'filename' => $file->getClientOriginalName(),
-            'path' => $path,
-            'file_type' => $file->getClientMimeType(),
-            'file_size' => $file->getSize(),
-            'folder_id' => $request->folder_id,
-            'task_id' => $request->task_id,
-            'uploaded_by' => auth()->id(),
-            'version' => 1
-        ]);
+    // Store the document
+    $document = Document::create([
+        'title' => $request->title,
+        'description' => $request->description,
+        'filename' => $file->getClientOriginalName(),
+        'path' => $path,
+        'file_type' => $file->getClientMimeType(),
+        'file_size' => $fileSize,  // Ensure file_size is set
+        'folder_id' => $request->folder_id,
+        'task_id' => $request->task_id,
+        'uploaded_by' => auth()->id(),
+        'version' => 1
+    ]);
 
-        return back()->with('success', 'Document uploaded successfully');
-    }
+    return back()->with('success', 'Document uploaded successfully');
+}
+
+    
 
     public function addVersion(Request $request, Document $document)
     {

@@ -51,6 +51,8 @@ Route::middleware(['auth'])->group(function () {
 
         Route::get('/documents/{document}/preview', [DocumentController::class, 'preview'])->name('documents.preview');
 
+     
+
 });
 
 // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');

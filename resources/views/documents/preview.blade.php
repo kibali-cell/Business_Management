@@ -8,6 +8,7 @@
             <p><strong>Version:</strong> v{{ $document->version }}</p>
             <p><strong>Last Updated:</strong> {{ $document->updated_at->format('d M Y, h:i A') }}</p>
             <p><strong>File Exists:</strong> {{ isset($exists) ? ($exists ? 'Yes' : 'No') : 'Not checked' }}</p>
+            <p><strong>File Size:</strong> {{ $document->file_size }}</p>
 
             @if(isset($error))
                 <p class="text-danger">{{ $error }}</p>

@@ -9,39 +9,72 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('documents', function (Blueprint $table) {
-            // Make task_id nullable since not all documents will be task-related
-            $table->foreignId('task_id')->nullable()->change();
-            
-            // Add new fields for document management
-            $table->string('title')->after('id');
-            $table->text('description')->nullable()->after('title');
-            $table->string('file_type')->after('path');
-            $table->integer('file_size')->after('file_type');
-            $table->foreignId('folder_id')->nullable()->after('task_id')
-                  ->constrained('folders')->nullOnDelete();
-            $table->boolean('is_public')->default(false)->after('folder_id');
-            $table->integer('version')->default(1)->after('is_public');
+            if (!Schema::hasColumn('documents', 'task_id')) {
+                $table->foreignId('task_id')->nullable()->change();
+            }
+
+            if (!Schema::hasColumn('documents', 'title')) {
+                $table->string('title')->after('id');
+            }
+
+            if (!Schema::hasColumn('documents', 'description')) {
+                $table->text('description')->nullable()->after('title');
+            }
+
+            if (!Schema::hasColumn('documents', 'file_type')) {
+                $table->string('file_type')->after('path');
+            }
+
+            if (!Schema::hasColumn('documents', 'file_size')) {
+                $table->integer('file_size')->after('file_type');
+            }
+
+            if (!Schema::hasColumn('documents', 'folder_id')) {
+                $table->foreignId('folder_id')->nullable()->after('task_id')
+                    ->constrained('folders')->nullOnDelete();
+            }
+
+            if (!Schema::hasColumn('documents', 'is_public')) {
+                $table->boolean('is_public')->default(false)->after('folder_id');
+            }
+
+            if (!Schema::hasColumn('documents', 'version')) {
+                $table->integer('version')->default(1)->after('is_public');
+            }
         });
     }
 
     public function down(): void
     {
         Schema::table('documents', function (Blueprint $table) {
-            // Instead of setting to 0, we'll drop the foreign key first
-            $table->dropForeign(['task_id']);
-            
-            // Then make the column NOT NULL with a default value
-            $table->foreignId('task_id')->nullable(false)->change();
-            
-            $table->dropColumn([
-                'title',
-                'description',
-                'file_type',
-                'file_size',
-                'folder_id',
-                'is_public',
-                'version',
-            ]);
+            if (Schema::hasColumn('documents', 'title')) {
+                $table->dropColumn('title');
+            }
+
+            if (Schema::hasColumn('documents', 'description')) {
+                $table->dropColumn('description');
+            }
+
+            if (Schema::hasColumn('documents', 'file_type')) {
+                $table->dropColumn('file_type');
+            }
+
+            if (Schema::hasColumn('documents', 'file_size')) {
+                $table->dropColumn('file_size');
+            }
+
+            if (Schema::hasColumn('documents', 'folder_id')) {
+                $table->dropForeign(['folder_id']);
+                $table->dropColumn('folder_id');
+            }
+
+            if (Schema::hasColumn('documents', 'is_public')) {
+                $table->dropColumn('is_public');
+            }
+
+            if (Schema::hasColumn('documents', 'version')) {
+                $table->dropColumn('version');
+            }
         });
     }
 };

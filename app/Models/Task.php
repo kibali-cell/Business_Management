@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use App\Models\Document;
+use App\Models\User;
+use App\Models\DocumentVersion;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model

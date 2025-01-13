@@ -1,4 +1,3 @@
-
 <div class="modal fade" id="createTaskModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -6,7 +5,7 @@
                 <h5 class="modal-title">Create New Task</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <form action="{{ route('tasks.store') }}" method="POST">
+            <form action="{{ route('tasks.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
@@ -37,10 +36,18 @@
                             <option value="high">High</option>
                         </select>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label class="form-label">Due Date</label>
                         <input type="date" name="due_date" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Attachments</label>
+                        <input type="file" name="documents[]" class="form-control" multiple>
+                        <div id="editDocumentsList" class="mt-2">
+                            <!-- Existing documents will be loaded here -->
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">

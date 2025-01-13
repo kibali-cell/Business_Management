@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('documents', function (Blueprint $table) {
             $table->id();
+            $table->string('title')->nullable();
             $table->foreignId('task_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('filename');
             $table->string('path');

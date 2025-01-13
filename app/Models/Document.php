@@ -2,6 +2,11 @@
 
 namespace App\Models;
 
+use App\Models\Task;
+use App\Models\User;
+use App\Models\Folder;
+use App\Models\DocumentVersion;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model

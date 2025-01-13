@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use App\Models\User;
+use App\Models\Document;
 use App\Models\Folder;
 use Illuminate\Http\Request;
 
@@ -19,22 +20,35 @@ class TaskController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'nullable',
-            'assigned_to' => 'required|exists:users,id',
-            'priority' => 'required|in:low,medium,high',
-            'due_date' => 'required|date'
-        ]);
+{
+    $validated = $request->validate([
+        'title' => 'required|max:255',
+        'description' => 'nullable',
+        'assigned_to' => 'required|exists:users,id',
+        'priority' => 'required|in:low,medium,high',
+        'due_date' => 'required|date',
+        'documents.*' => 'file|max:10240',
+    ]);
 
-        $validated['created_by'] = auth()->id();
+    $validated['created_by'] = auth()->id();
 
-        Task::create($validated);
+    $task = Task::create($validated);
 
-        return redirect()->route('tasks.index')
-            ->with('success', 'Task created successfully');
+    if ($request->hasFile('documents')) {
+        foreach ($request->file('documents') as $file) {
+            $path = $file->store('task-documents', 'public');
+            $task->documents()->create([
+                'filename' => $file->getClientOriginalName(),
+                'path' => $path,
+                'file_size' => $file->getSize(),
+                'uploaded_by' => auth()->id()  // Add the current user's ID
+            ]);
+        }
     }
+
+    return redirect()->route('tasks.index')
+        ->with('success', 'Task created successfully');
+}
 
     public function updateStatus(Request $request, Task $task)
     {
@@ -54,33 +68,33 @@ class TaskController extends Controller
     }
 
     public function update(Request $request, Task $task)
-    {
-        $validated = $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'nullable',
-            'priority' => 'required|in:low,medium,high',
-            'due_date' => 'required|date',
-            'assigned_to' => 'required|exists:users,id',
-        ]);
+{
+    $validated = $request->validate([
+        'title' => 'required|max:255',
+        'description' => 'nullable',
+        'priority' => 'required|in:low,medium,high',
+        'due_date' => 'required|date',
+        'assigned_to' => 'required|exists:users,id',
+    ]);
 
-        $task->update($validated);
+    $task->update($validated);
 
-        // Send notification to assigned user
-        $task->assignee->notify(new TaskUpdatedNotification($task));
+    $task->assignee->notify(new TaskUpdatedNotification($task));
 
-        // Handle document uploads if any
     if ($request->hasFile('documents')) {
         foreach ($request->file('documents') as $file) {
             $path = $file->store('task-documents', 'public');
             $task->documents()->create([
                 'filename' => $file->getClientOriginalName(),
-                'path' => $path
+                'path' => $path,
+                'file_size' => $file->getSize(),
+                'uploaded_by' => auth()->id()  // Add the current user's ID
             ]);
         }
     }
 
-        return response()->json(['success' => true, 'task' => $task->fresh()->load('assignee')]);
-    }
+    return response()->json(['success' => true, 'task' => $task->fresh()->load('assignee')]);
+}
 
         public function attachDocument(Task $task, Request $request)
     {
