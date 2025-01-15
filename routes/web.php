@@ -1,4 +1,7 @@
 <?php
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\TaskController;
@@ -50,6 +53,18 @@ Route::middleware(['auth'])->group(function () {
         });
         Route::delete('/documents/{id}', [DocumentController::class, 'destroy'])->name('documents.destroy');
         Route::get('/documents/{document}/preview', [DocumentController::class, 'preview'])->name('documents.preview');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Account routes
+    Route::resource('accounts', AccountController::class);
+    
+    // Transaction routes
+    Route::resource('transactions', TransactionController::class);
+    
+    // Invoice routes
+    Route::resource('invoices', InvoiceController::class);
+
 });
 
 // Route::middleware(['auth'])->group(function () {

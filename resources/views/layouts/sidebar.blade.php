@@ -49,6 +49,42 @@
                         Documents
                     </a>
                 </li>
+
+                <li class="nav-item">
+    <a class="nav-link dropdown-toggle {{ request()->routeIs('finance.*') ? 'active' : '' }}" 
+       data-bs-toggle="collapse" 
+       href="#financeSubmenu" 
+       role="button" 
+       aria-expanded="false">
+        <i class="fas fa-money-bill me-2"></i>
+        Financial Management
+    </a>
+    <div class="collapse {{ request()->routeIs('finance.*') ? 'show' : '' }}" id="financeSubmenu">
+        <ul class="nav flex-column ms-3">
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('accounts.*') ? 'active' : '' }}" 
+                   href="{{ route('accounts.index') }}">
+                    <i class="fas fa-bank me-2"></i>
+                    Accounts
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('transactions.*') ? 'active' : '' }}" 
+                   href="{{ route('transactions.index') }}">
+                    <i class="fas fa-exchange-alt me-2"></i>
+                    Transactions
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}" 
+                   href="{{ route('invoices.index') }}">
+                    <i class="fas fa-file-invoice-dollar me-2"></i>
+                    Invoices
+                </a>
+            </li>
+        </ul>
+    </div>
+</li>
             </ul>
 
             <!-- Optional: Add secondary menu items -->
