@@ -8,6 +8,12 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\FolderController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\BudgetController;
+use App\Http\Controllers\BankAccountController;
+use App\Http\Controllers\CurrencyController;
+// use App\Http\Controllers\FinancialController;
+
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -65,6 +71,65 @@ Route::middleware(['auth'])->group(function () {
     // Invoice routes
     Route::resource('invoices', InvoiceController::class);
 
+});
+
+
+
+
+
+// Route::middleware(['auth'])->group(function () {
+//     // Reports
+//     Route::get('/reports/profit-loss', [ReportController::class, 'profitLoss']);
+//     Route::get('/reports/balance-sheet', [ReportController::class, 'balanceSheet']);
+    
+//     // Budgets
+//     Route::resource('budgets', BudgetController::class);
+//     Route::post('/budgets/{budget}/track', [BudgetController::class, 'track']);
+    
+//     // Bank Integration
+//     Route::get('/bank-accounts', [BankAccountController::class, 'index']);
+//     Route::post('/bank-accounts/sync', [BankAccountController::class, 'sync']);
+    
+//     // Currency
+//     Route::get('/exchange-rates', [CurrencyController::class, 'rates']);
+//     Route::post('/currency/convert', [CurrencyController::class, 'convert']);
+// });
+
+
+// routes/web.php
+
+Route::middleware(['auth'])->group(function () {
+    // Financial Dashboard
+    // Route::get('/financial/dashboard', [FinancialController::class, 'dashboard'])
+    //     ->name('financial.dashboard');
+
+    // Reports
+    Route::prefix('reports')->name('reports.')->group(function () {
+        Route::get('/profit-loss', [ReportController::class, 'profitLoss'])
+            ->name('profit-loss');
+        Route::get('/balance-sheet', [ReportController::class, 'balanceSheet'])
+            ->name('balance-sheet');
+        Route::get('/cash-flow', [ReportController::class, 'cashFlow'])
+            ->name('cash-flow');
+        Route::get('/export-balance-sheet', [ReportController::class, 'exportBalanceSheet'])
+            ->name('exportBalanceSheet');
+    });
+
+    // Budget Management
+    Route::resource('budgets', BudgetController::class);
+    Route::post('/budgets/{budget}/track', [BudgetController::class, 'track'])
+        ->name('budgets.track');
+
+    // Bank Accounts
+    Route::resource('bank-accounts', BankAccountController::class);
+    Route::post('/bank-accounts/{account}/sync', [BankAccountController::class, 'sync'])
+        ->name('bank-accounts.sync');
+
+    // Currency Management
+    Route::get('/currency', [CurrencyController::class, 'index'])
+        ->name('currency.index');
+    Route::post('/currency/convert', [CurrencyController::class, 'convert'])
+        ->name('currency.convert');
 });
 
 // Route::middleware(['auth'])->group(function () {

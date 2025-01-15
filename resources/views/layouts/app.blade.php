@@ -26,6 +26,7 @@
     <script src="{{ asset('js/tasks.js') }}"></script>
     <script src="{{ asset('js/document.js') }}"></script>
     <script src="{{ asset('js/finance.js') }}"></script>
+    <script src="{{ asset('js/financial.js') }}"></script>
     <script src="{{ asset('js/folder_management.js') }}"></script>
     <script src="{{ asset('js/sidebar.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>

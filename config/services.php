@@ -40,4 +40,9 @@ return [
     'client_secret' => env('GOOGLE_CLIENT_SECRET'),
     'redirect_uri' => env('GOOGLE_REDIRECT_URI'),
     ],
+
+    'bank_api' => [
+    'url' => env('BANK_API_URL'),
+    'key' => env('BANK_API_KEY'),
+    ],
 ];
