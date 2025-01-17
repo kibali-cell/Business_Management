@@ -1,3 +1,4 @@
+
 @extends('layouts.app')
 
 @section('content')
@@ -6,7 +7,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h4>Profit & Loss Statement</h4>
+                    <h4>Cash Flow Statement</h4>
                     <div>
                         <form class="d-flex gap-2" method="GET">
                             <input type="date" name="start_date" class="form-control" value="{{ request('start_date', now()->startOfMonth()->format('Y-m-d')) }}">
@@ -20,36 +21,31 @@
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <tr class="table-primary">
-                                <th colspan="2">Revenue</th>
+                                <th colspan="2">Operating Activities</th>
                             </tr>
-                            @foreach($data['revenue'] as $key => $value)
+                            <tr class="table-secondary">
+                                <th colspan="2">Cash Inflows</th>
+                            </tr>
+                            @foreach($data['operating_activities']['inflows'] as $key => $value)
                             <tr>
                                 <td>{{ ucfirst(str_replace('_', ' ', $key)) }}</td>
                                 <td class="text-end">${{ number_format($value, 2) }}</td>
                             </tr>
                             @endforeach
-                            <tr class="table-secondary">
-                                <th>Total Revenue</th>
-                                <th class="text-end">${{ number_format($data['total_revenue'], 2) }}</th>
-                            </tr>
 
-                            <tr class="table-primary">
-                                <th colspan="2">Expenses</th>
+                            <tr class="table-secondary">
+                                <th colspan="2">Cash Outflows</th>
                             </tr>
-                            @foreach($data['expenses'] as $key => $value)
+                            @foreach($data['operating_activities']['outflows'] as $key => $value)
                             <tr>
                                 <td>{{ ucfirst(str_replace('_', ' ', $key)) }}</td>
                                 <td class="text-end">${{ number_format($value, 2) }}</td>
                             </tr>
                             @endforeach
-                            <tr class="table-secondary">
-                                <th>Total Expenses</th>
-                                <th class="text-end">${{ number_format($data['total_expenses'], 2) }}</th>
-                            </tr>
 
                             <tr class="table-success">
-                                <th>Net Profit</th>
-                                <th class="text-end">${{ number_format($data['net_profit'], 2) }}</th>
+                                <th>Net Operating Cash Flow</th>
+                                <th class="text-end">${{ number_format($data['net_operating_cash'], 2) }}</th>
                             </tr>
                         </table>
                     </div>

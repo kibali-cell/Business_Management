@@ -35,13 +35,16 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($report as $account => $amount)
-                <tr>
-                    <td>{{ $account }}</td>
-                    <td>{{ number_format($amount, 2) }}</td>
-                </tr>
-            @endforeach
-        </tbody>
+    @foreach ($data as $account => $amount)
+        <tr>
+            <td>{{ $account }}</td>
+            <td>
+                {{ is_numeric($amount) ? number_format($amount, 2) : 'N/A' }}
+            </td>
+        </tr>
+    @endforeach
+</tbody>
+
     </table>
 
     <p><strong>Generated on:</strong> {{ now()->format('M d, Y h:i A') }}</p>
