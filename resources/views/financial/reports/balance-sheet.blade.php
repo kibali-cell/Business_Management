@@ -20,20 +20,24 @@
                                     <th>Amount</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @foreach ($report as $account => $amount)
-                                    <tr>
-                                        <td>{{ $account }}</td>
-                                        <td>{{ number_format($amount, 2) }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th>Total</th>
-                                    <th>{{ number_format($report->sum(), 2) }}</th>
-                                </tr>
-                            </tfoot>
+                                <tbody>
+    @foreach ($report as $account => $amount)
+        <tr>
+            <td>{{ $account }}</td>
+            <td>{{ number_format($amount->amount ?? $amount, 2) }}</td>  <!-- Ensure $amount is numeric -->
+        </tr>
+    @endforeach
+</tbody>
+
+<tfoot>
+    <tr>
+        <th>Total</th>
+        <th>{{ number_format($report->sum(function($item) {
+            return $item->amount ?? $item;  // If $item is a Carbon object, convert it to a numeric value
+        }), 2) }}</th>
+    </tr>
+</tfoot>
+
                         </table>
                     </div>
                 </div>

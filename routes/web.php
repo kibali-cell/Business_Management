@@ -74,6 +74,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
+Route::resource('budgets', BudgetController::class);
 
 
 
@@ -114,6 +115,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export-balance-sheet', [ReportController::class, 'exportBalanceSheet'])
             ->name('exportBalanceSheet');
     });
+    
 
     // Budget Management
     Route::resource('budgets', BudgetController::class);

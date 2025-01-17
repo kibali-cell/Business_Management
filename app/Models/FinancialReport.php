@@ -4,22 +4,25 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Budget extends Model
+class FinanciaalReport extends Model
 {
     //
     protected $fillable = [
-        'category',
-        'amount',
+        'report_type',
         'start_date',
         'end_date',
-        'actual_amount',
-        'notes'
+        'data',
+        'generated_by'
     ];
 
     protected $casts = [
-        'amount' => 'decimal:2',
-        'actual_amount' => 'decimal:2',
+        'data' => 'array',
         'start_date' => 'datetime',
         'end_date' => 'datetime'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'generated_by');
+    }
 }

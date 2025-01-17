@@ -6,12 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 class BankAccount extends Model
 {
     protected $fillable = [
-        'name', 'account_number', 'bank_name',
-        'external_id', 'last_synced_at'
+        'bank_name',
+        'account_number',
+        'account_type',
+        'currency',
+        'balance',
+        'last_synced'
     ];
 
     protected $casts = [
-        'last_synced_at' => 'datetime'
+        'balance' => 'decimal:2',
+        'last_synced' => 'datetime'
     ];
 
     public function transactions()
