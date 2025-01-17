@@ -32,9 +32,10 @@
                                     <td>{{ number_format($budget->actual_amount, 2) }}</td>
                                     <td>{{ $budget->start_date->format('M d') }} - {{ $budget->end_date->format('M d, Y') }}</td>
                                     <td>
-                                        <span class="badge bg-{{ $budget->status }}">
-                                            {{ ucfirst($budget->status) }}
-                                        </span>
+                                        <span class="badge bg-{{ $budget->status == 'good' ? 'success' : ($budget->status == 'warning' ? 'warning' : 'danger') }}">
+    {{ ucfirst($budget->status) }}
+</span>
+
                                     </td>
                                     <td>
                                         <button class="btn btn-sm btn-info" onclick="trackBudget({{ $budget->id }})">

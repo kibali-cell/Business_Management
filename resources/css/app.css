@@ -67,6 +67,16 @@
     text-transform: uppercase;
 }
 
+#sidebar ul.nav {
+    list-style-type: none; /* Removes bullets */
+    padding-left: 0;       /* Removes default left padding */
+}
+
+#sidebar ul.nav li.nav-item {
+    padding-left: 0; /* Removes any additional padding for items */
+}
+
+
 /* Main content area */
 main {
     padding-top: 1.5rem;

@@ -65,7 +65,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($exchangeRates as $rate)
+                                @foreach($currencies as $rate)
                                 <tr>
                                     <td>{{ $rate->from_currency }}/{{ $rate->to_currency }}</td>
                                     <td>{{ number_format($rate->rate, 6) }}</td>

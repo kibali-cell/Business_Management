@@ -25,7 +25,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($bankAccounts as $account)
+                                @foreach($accounts as $account)
                                 <tr>
                                     <td>{{ $account->bank_name }}</td>
                                     <td>{{ $account->name }}</td>
@@ -47,3 +47,4 @@
         </div>
     </div>
 </div>
+@endsection

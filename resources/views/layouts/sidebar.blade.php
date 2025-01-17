@@ -50,96 +50,91 @@
                     </a>
                 </li>
 
+                <!-- Financial Management Dropdown -->
                 <li class="nav-item">
-                    <a class="nav-link dropdown-toggle {{ request()->routeIs('finance.*') ? 'active' : '' }}" 
-                    data-bs-toggle="collapse" 
-                    href="#financeSubmenu" 
-                    role="button" 
-                    aria-expanded="false">
+                    <a href="#financeSubmenu" data-bs-toggle="collapse" 
+                    class="nav-link {{ request()->routeIs('finance.*') ? 'active' : '' }}" 
+                    aria-expanded="{{ request()->routeIs('finance.*') ? 'true' : 'false' }}">
                         <i class="fas fa-money-bill me-2"></i>
                         Financial Management
+                        <i class="fas fa-chevron-down float-end"></i>
                     </a>
-                    <div class="collapse {{ request()->routeIs('finance.*') ? 'show' : '' }}" id="financeSubmenu">
-                        <ul class="nav flex-column ms-3">
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('accounts.*') ? 'active' : '' }}" 
-                                href="{{ route('accounts.index') }}">
-                                    <i class="fas fa-bank me-2"></i>
-                                    Accounts
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('transactions.*') ? 'active' : '' }}" 
-                                href="{{ route('transactions.index') }}">
-                                    <i class="fas fa-exchange-alt me-2"></i>
-                                    Transactions
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link {{ request()->routeIs('invoices.*') ? 'active' : '' }}" 
-                                href="{{ route('invoices.index') }}">
-                                    <i class="fas fa-file-invoice-dollar me-2"></i>
-                                    Invoices
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
+                    <ul class="collapse {{ request()->routeIs('finance.*') ? 'show' : '' }}" id="financeSubmenu" style="list-style: none; padding-left: 0;">
+    <li class="nav-item">
+        <a href="{{ route('accounts.index') }}" 
+           class="nav-link ms-4 {{ request()->routeIs('accounts.*') ? 'active' : '' }}">
+            <i class="fas fa-bank me-2"></i>
+            Accounts
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ route('transactions.index') }}" 
+           class="nav-link ms-4 {{ request()->routeIs('transactions.*') ? 'active' : '' }}">
+            <i class="fas fa-exchange-alt me-2"></i>
+            Transactions
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{{ route('invoices.index') }}" 
+           class="nav-link ms-4 {{ request()->routeIs('invoices.*') ? 'active' : '' }}">
+            <i class="fas fa-file-invoice-dollar me-2"></i>
+            Invoices
+        </a>
+    </li>
+</ul>
+
                 </li>
 
                 <!-- Reports Dropdown -->
-        <li class="nav-item">
-            <a href="#reportsSubmenu" data-bs-toggle="collapse" class="nav-link ">
-                <i class="fas fa-file-alt me-2"></i>
-                Reports
-                <i class="fas fa-chevron-down float-end"></i>
-            </a>
-            <ul class="collapse {{ request()->routeIs('reports.*') ? 'show' : '' }}" id="reportsSubmenu">
-                <li>
-                    <a href="{{ route('reports.profit-loss') }}" class="nav-link  ms-4 {{ request()->routeIs('reports.profit-loss') ? 'active' : '' }}">
-                        Profit & Loss
+                <li class="nav-item">
+                    <a href="#reportsSubmenu" data-bs-toggle="collapse" class="nav-link {{ request()->routeIs('reports.*') ? 'active' : '' }}">
+                        <i class="fas fa-file-alt me-2"></i>
+                        Reports
+                        <i class="fas fa-chevron-down float-end"></i>
+                    </a>
+                    <ul class="collapse {{ request()->routeIs('reports.*') ? 'show' : '' }}" id="reportsSubmenu" style=" list-style: none; padding-left: 0; " >
+                        <li class="nav-item">
+                            <a href="{{ route('reports.profit-loss') }}" class="nav-link ms-4 {{ request()->routeIs('reports.profit-loss') ? 'active' : '' }}">
+                                Profit & Loss
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('reports.balance-sheet') }}" class="nav-link ms-4 {{ request()->routeIs('reports.balance-sheet') ? 'active' : '' }}">
+                                Balance Sheet
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{{ route('reports.cash-flow') }}" class="nav-link ms-4 {{ request()->routeIs('reports.cash-flow') ? 'active' : '' }}">
+                                Cash Flow
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+
+                <!-- Budget Management -->
+                <li class="nav-item">
+                    <a href="{{ route('budgets.index') }}" class="nav-link {{ request()->routeIs('budgets.*') ? 'active' : '' }}">
+                        <i class="fas fa-wallet me-2"></i>
+                        Budget Planning
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('reports.balance-sheet') }}" class="nav-link ms-4 {{ request()->routeIs('reports.balance-sheet') ? 'active' : '' }}">
-                        Balance Sheet
+
+                <!-- Bank Accounts -->
+                <li class="nav-item">
+                    <a href="{{ route('bank-accounts.index') }}" class="nav-link {{ request()->routeIs('bank-accounts.*') ? 'active' : '' }}">
+                        <i class="fas fa-university me-2"></i>
+                        Bank Accounts
                     </a>
                 </li>
-                <li>
-                    <a href="{{ route('reports.cash-flow') }}" class="nav-link ms-4 {{ request()->routeIs('reports.cash-flow') ? 'active' : '' }}">
-                        Cash Flow
+
+                <!-- Currency Management -->
+                <li class="nav-item">
+                    <a href="{{ route('currency.index') }}" class="nav-link {{ request()->routeIs('currency.*') ? 'active' : '' }}">
+                        <i class="fas fa-exchange-alt me-2"></i>
+                        Currency Exchange
                     </a>
                 </li>
             </ul>
-        </li>
-
-
-         <!-- Budget Management -->
-         <li class="nav-item">
-            <a href="{{ route('budgets.index') }}" class="nav-link {{ request()->routeIs('budgets.*') ? 'active' : '' }}">
-                <i class="fas fa-wallet me-2"></i>
-                Budget Planning
-            </a>
-        </li>
-
-        <!-- Bank Accounts -->
-        <li class="nav-item">
-            <a href="{{ route('bank-accounts.index') }}" class="nav-link  {{ request()->routeIs('bank-accounts.*') ? 'active' : '' }}">
-                <i class="fas fa-university me-2"></i>
-                Bank Accounts
-            </a>
-        </li>
-
-        <!-- Currency Management -->
-        <li class="nav-item">
-            <a href="{{ route('currency.index') }}" class="nav-link text-white {{ request()->routeIs('currency.*') ? 'active' : '' }}">
-                <i class="fas fa-exchange-alt me-2"></i>
-                Currency Exchange
-            </a>
-        </li>
-
-                
-            </ul>
-            
 
             <!-- Optional: Add secondary menu items -->
             <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
@@ -156,4 +151,3 @@
         </div>
     </div>
 </nav>
-
