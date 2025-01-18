@@ -1,154 +1,94 @@
 <?php
-use App\Http\Controllers\AccountController;
-use App\Http\Controllers\InvoiceController;
-use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\DocumentController;
-use App\Http\Controllers\TaskController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\FolderController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\BudgetController;
-use App\Http\Controllers\BankAccountController;
-use App\Http\Controllers\CurrencyController;
-// use App\Http\Controllers\FinancialController;
-
+use App\Http\Controllers\{
+    AccountController,
+    InvoiceController,
+    TransactionController,
+    DashboardController,
+    DocumentController,
+    TaskController,
+    CustomerController,
+    ProfileController,
+    FolderController,
+    ReportController,
+    BudgetController,
+    BankAccountController,
+    CurrencyController
+};
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Public Routes
+Route::get('/', fn() => view('welcome'));
+Route::get('/dashboard', fn() => view('dashboard'))->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
+// Authenticated Routes
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+    // Profile Management
+    Route::prefix('profile')->name('profile.')->group(function () {
+        Route::get('/', [ProfileController::class, 'edit'])->name('edit');
+        Route::patch('/', [ProfileController::class, 'update'])->name('update');
+        Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
+    });
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/tasks', [TaskController::class, 'index'])->name('tasks.index');
-    Route::post('/tasks', [TaskController::class, 'store'])->name('tasks.store');
-    Route::get('/tasks/{task}/edit', [TaskController::class, 'edit'])->name('tasks.edit');
-    Route::put('/tasks/{task}', [TaskController::class, 'update'])->name('tasks.update');
-    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
-    Route::patch('/tasks/{task}/status', [TaskController::class, 'updateStatus'])
-        ->name('tasks.update-status');
+    // Task Management
+    Route::prefix('tasks')->name('tasks.')->group(function () {
+        Route::get('/', [TaskController::class, 'index'])->name('index');
+        Route::post('/', [TaskController::class, 'store'])->name('store');
+        Route::get('/{task}/edit', [TaskController::class, 'edit'])->name('edit');
+        Route::put('/{task}', [TaskController::class, 'update'])->name('update');
+        Route::delete('/{task}', [TaskController::class, 'destroy'])->name('destroy');
+        Route::patch('/{task}/status', [TaskController::class, 'updateStatus'])->name('update-status');
+        Route::post('/{task}/documents', [TaskController::class, 'attachDocument'])->name('attach_document');
+        Route::delete('/{task}/documents/{document}', [TaskController::class, 'detachDocument'])->name('detach_document');
+    });
 
+    // Document Management
+    Route::prefix('documents')->name('documents.')->group(function () {
+        Route::get('/', [DocumentController::class, 'index'])->name('index');
+        Route::post('/', [DocumentController::class, 'store'])->name('store');
+        Route::post('/{document}/version', [DocumentController::class, 'addVersion'])->name('version');
+        Route::get('/{document}/download', [DocumentController::class, 'download'])->name('download');
+        Route::get('/{document}/preview', [DocumentController::class, 'preview'])->name('preview');
+        Route::delete('/{id}', [DocumentController::class, 'destroy'])->name('destroy');
+        Route::resource('folders', FolderController::class)->only(['store', 'index']);
+    });
 
-        Route::post('/tasks/{task}/documents', [TaskController::class, 'attachDocument'])
-     ->name('tasks.attach_document');
-Route::delete('/tasks/{task}/documents/{document}', [TaskController::class, 'detachDocument'])
-     ->name('tasks.detach_document');
-});
-
-Route::middleware(['auth'])->group(function () {
-    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
-    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
-    Route::post('/documents/{document}/version', [DocumentController::class, 'addVersion'])
-         ->name('documents.version');
-    Route::get('/documents/{document}/download', [DocumentController::class, 'download'])
-         ->name('documents.download');
-
-         Route::prefix('documents')->name('documents.')->group(function () {
-            Route::resource('folders', FolderController::class)->only(['store', 'index']);
-        });
-        Route::delete('/documents/{id}', [DocumentController::class, 'destroy'])->name('documents.destroy');
-        Route::get('/documents/{document}/preview', [DocumentController::class, 'preview'])->name('documents.preview');
-});
-
-Route::middleware(['auth'])->group(function () {
-    // Account routes
-    Route::resource('accounts', AccountController::class);
-    
-    // Transaction routes
-    Route::resource('transactions', TransactionController::class);
-    
-    // Invoice routes
-    Route::resource('invoices', InvoiceController::class);
-
-});
-
-
-Route::resource('budgets', BudgetController::class);
-
-
-
-// Route::middleware(['auth'])->group(function () {
-//     // Reports
-//     Route::get('/reports/profit-loss', [ReportController::class, 'profitLoss']);
-//     Route::get('/reports/balance-sheet', [ReportController::class, 'balanceSheet']);
-    
-//     // Budgets
-//     Route::resource('budgets', BudgetController::class);
-//     Route::post('/budgets/{budget}/track', [BudgetController::class, 'track']);
-    
-//     // Bank Integration
-//     Route::get('/bank-accounts', [BankAccountController::class, 'index']);
-//     Route::post('/bank-accounts/sync', [BankAccountController::class, 'sync']);
-    
-//     // Currency
-//     Route::get('/exchange-rates', [CurrencyController::class, 'rates']);
-//     Route::post('/currency/convert', [CurrencyController::class, 'convert']);
-// });
-
-
-// routes/web.php
-
-Route::middleware(['auth'])->group(function () {
-    // Financial Dashboard
-    // Route::get('/financial/dashboard', [FinancialController::class, 'dashboard'])
-    //     ->name('financial.dashboard');
+    // Resource Management
+    Route::resources([
+        'accounts' => AccountController::class,
+        'transactions' => TransactionController::class,
+        'invoices' => InvoiceController::class,
+        'budgets' => BudgetController::class,
+        'bank-accounts' => BankAccountController::class
+    ]);
 
     // Reports
     Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/profit-loss', [ReportController::class, 'profitLoss'])
-            ->name('profit-loss');
-        Route::get('/balance-sheet', [ReportController::class, 'balanceSheet'])
-            ->name('balance-sheet');
-        Route::get('/cash-flow', [ReportController::class, 'cashFlow'])
-            ->name('cash-flow');
-        Route::get('/export-balance-sheet', [ReportController::class, 'exportBalanceSheet'])
-            ->name('exportBalanceSheet');
+        Route::get('/profit-loss', [ReportController::class, 'profitLoss'])->name('profit-loss');
+        Route::get('/balance-sheet', [ReportController::class, 'balanceSheet'])->name('balance-sheet');
+        Route::get('/cash-flow', [ReportController::class, 'cashFlow'])->name('cash-flow');
+        Route::get('/export-balance-sheet', [ReportController::class, 'exportBalanceSheet'])->name('export-balance-sheet');
     });
-    
 
     // Budget Management
-    Route::resource('budgets', BudgetController::class);
-    Route::post('/budgets/{budget}/track', [BudgetController::class, 'track'])
-        ->name('budgets.track');
+    Route::post('/budgets/{budget}/track', [BudgetController::class, 'track'])->name('budgets.track');
 
-    // Bank Accounts
-    Route::resource('bank-accounts', BankAccountController::class);
-    Route::post('/bank-accounts/{account}/deposit', [BankAccountController::class, 'deposit'])
-        ->name('bank-accounts.deposit');
-        // Add this route in your routes/web.php
-Route::post('/bank-accounts/{account}/withdraw', [BankAccountController::class, 'withdraw'])->name('bank-accounts.withdraw');
-    Route::post('/bank-accounts/{account}/sync', [BankAccountController::class, 'sync'])
-        ->name('bank-accounts.sync');
+    // Bank Account Operations
+    Route::prefix('bank-accounts')->name('bank-accounts.')->group(function () {
+        Route::post('/{account}/deposit', [BankAccountController::class, 'deposit'])->name('deposit');
+        Route::post('/{account}/withdraw', [BankAccountController::class, 'withdraw'])->name('withdraw');
+        Route::post('/{account}/sync', [BankAccountController::class, 'sync'])->name('sync');
+    });
 
     // Currency Management
-    Route::get('/currency', [CurrencyController::class, 'index'])
-        ->name('currency.index');
-    Route::post('/currency/convert', [CurrencyController::class, 'convert'])
-        ->name('currency.convert');
-});
+    Route::prefix('currency')->name('currency.')->group(function () {
+        Route::get('/', [CurrencyController::class, 'index'])->name('index');
+        Route::post('/convert', [CurrencyController::class, 'convert'])->name('convert');
+    });
 
-// Route::middleware(['auth'])->group(function () {
-//     Route::resource('folders', FolderController::class);
-// });
-
-// Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-Route::middleware(['auth'])->group(function () {
+    // CRM
     Route::prefix('crm')->name('crm.')->group(function () {
         Route::resource('customers', CustomerController::class);
     });
 });
-
 
 require __DIR__.'/auth.php';
