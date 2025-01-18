@@ -20,4 +20,10 @@ class Account extends Model
     {
         return $this->hasMany(Transaction::class, 'from_account_id');
     }
+
+    public function currency()
+    {
+        return $this->belongsTo(Currency::class);
+    }
+
 }

@@ -124,6 +124,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Bank Accounts
     Route::resource('bank-accounts', BankAccountController::class);
+    Route::post('/bank-accounts/{account}/deposit', [BankAccountController::class, 'deposit'])
+        ->name('bank-accounts.deposit');
+        // Add this route in your routes/web.php
+Route::post('/bank-accounts/{account}/withdraw', [BankAccountController::class, 'withdraw'])->name('bank-accounts.withdraw');
     Route::post('/bank-accounts/{account}/sync', [BankAccountController::class, 'sync'])
         ->name('bank-accounts.sync');
 

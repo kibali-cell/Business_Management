@@ -33,4 +33,46 @@ class BankAccountController extends Controller
         
         return redirect()->back()->with('success', 'Account synchronized successfully');
     }
+
+    public function deposit(Request $request, BankAccount $account)
+{
+    $validated = $request->validate([
+        'amount' => 'required|numeric|min:0.01',
+        'description' => 'nullable|string|max:255'
+    ]);
+
+    try {
+        $account->deposit(
+            $validated['amount'],
+            $validated['description'] ?? 'Cash deposit'
+        );
+
+        return redirect()->route('bank-accounts.transactions', $account)
+            ->with('success', 'Deposit completed successfully');
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->with('error', 'Failed to process deposit: ' . $e->getMessage());
+    }
+}
+
+public function withdraw(Request $request, BankAccount $account)
+{
+    $validated = $request->validate([
+        'amount' => 'required|numeric|min:0.01',
+        'description' => 'nullable|string|max:255'
+    ]);
+
+    try {
+        $account->withdraw(
+            $validated['amount'],
+            $validated['description'] ?? 'Cash withdrawal'
+        );
+
+        return redirect()->route('bank-accounts.transactions', $account)
+            ->with('success', 'Withdrawal completed successfully');
+    } catch (\Exception $e) {
+        return redirect()->back()
+            ->with('error', 'Failed to process withdrawal: ' . $e->getMessage());
+    }
+}
 }

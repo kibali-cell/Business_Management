@@ -12,8 +12,21 @@
                 New Transaction
             </button>
         </div>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4>Account Transactions - 
+                {{ $transactions->first()->fromAccount->bank_name ?? 'Unknown Bank' }} 
+                ({{ $transactions->first()->fromAccount->account_number ?? 'N/A' }})
+            </h4>
+            <div>
+                <button class="btn btn-success me-2" data-bs-toggle="modal" data-bs-target="#depositModal">
+                    <i class="fas fa-plus"></i> Deposit
+                </button>
+                <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#withdrawModal">
+                    <i class="fas fa-minus"></i> Withdraw
+                </button>
+            </div>
+        </div>
     </div>
-
 
     <div class="card">
         <div class="card-body">
@@ -121,4 +134,63 @@
         </div>
     </div>
 </div>
+
+<!-- Deposit Modal -->
+<div class="modal fade" id="depositModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('bank-accounts.deposit', $account ?? '') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Make Deposit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Amount ({{ $account->currency->code ?? 'N/A' }})</label>
+                        <input type="number" name="amount" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Description</label>
+                        <input type="text" name="description" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-success">Deposit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Withdrawal Modal -->
+<div class="modal fade" id="withdrawModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('bank-accounts.withdraw', $account ?? '') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Make Withdrawal</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label>Amount ({{ $account->currency->code ?? 'N/A' }})</label>
+                        <input type="number" name="amount" class="form-control" step="0.01" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Description</label>
+                        <input type="text" name="description" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-danger">Withdraw</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 @endsection
