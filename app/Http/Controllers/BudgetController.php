@@ -40,11 +40,30 @@ class BudgetController extends Controller
         return redirect()->back()->with('success', 'Budget created successfully');
     }
 
+    // public function track($id)
+    // {
+    //     $budget = Budget::findOrFail($id);
+    //     $trackedBudget = $this->budgetService->trackBudget($budget);
+
+    //     return response()->json($trackedBudget);
+    // }
+
     public function track($id)
-    {
+{
+    try {
         $budget = Budget::findOrFail($id);
         $trackedBudget = $this->budgetService->trackBudget($budget);
 
-        return response()->json($trackedBudget);
+        return response()->json([
+            'success' => true,
+            'data' => $trackedBudget,
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => $e->getMessage(),
+        ], 500);
     }
+}
+
 }

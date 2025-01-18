@@ -11,6 +11,12 @@ class Account extends Model
         'currency', 'description'
     ];
 
+    public function transactions()
+{
+    return $this->hasMany(Transaction::class, 'to_account_id');
+}
+
+
     public function incomingTransactions()
     {
         return $this->hasMany(Transaction::class, 'to_account_id');

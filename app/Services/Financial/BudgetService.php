@@ -15,7 +15,7 @@ class BudgetService
     public function trackBudget(Budget $budget)
     {
         $actualAmount = Transaction::where('category', $budget->category)
-            ->whereBetween('date', [$budget->start_date, $budget->end_date])
+            ->whereBetween('transaction_date', [$budget->start_date, $budget->end_date])
             ->sum('amount');
 
         $budget->update([

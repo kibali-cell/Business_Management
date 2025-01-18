@@ -72,10 +72,15 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('invoices', InvoiceController::class);
 
 });
+Route::get('accounts/{account}/download', [AccountController::class, 'download'])->name('accounts.download');
 
+Route::post('/bank-accounts/{account}/deposit', [BankAccountController::class, 'deposit'])->name('bank-accounts.deposit');
+
+
+// Route::post('/bank-accounts/{account}/deposit', [TransactionController::class, 'deposit'])->name('bank-accounts.deposit');
+// Route::post('/bank-accounts/{account}/withdraw', [TransactionController::class, 'withdraw'])->name('bank-accounts.withdraw');
 
 Route::resource('budgets', BudgetController::class);
-
 
 
 // Route::middleware(['auth'])->group(function () {
@@ -115,18 +120,19 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/export-balance-sheet', [ReportController::class, 'exportBalanceSheet'])
             ->name('exportBalanceSheet');
     });
+
     
 
     // Budget Management
     Route::resource('budgets', BudgetController::class);
     Route::post('/budgets/{budget}/track', [BudgetController::class, 'track'])
         ->name('budgets.track');
+        
 
     // Bank Accounts
     Route::resource('bank-accounts', BankAccountController::class);
     Route::post('/bank-accounts/{account}/deposit', [BankAccountController::class, 'deposit'])
         ->name('bank-accounts.deposit');
-        // Add this route in your routes/web.php
 Route::post('/bank-accounts/{account}/withdraw', [BankAccountController::class, 'withdraw'])->name('bank-accounts.withdraw');
     Route::post('/bank-accounts/{account}/sync', [BankAccountController::class, 'sync'])
         ->name('bank-accounts.sync');
