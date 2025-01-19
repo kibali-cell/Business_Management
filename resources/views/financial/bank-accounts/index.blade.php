@@ -47,4 +47,46 @@
         </div>
     </div>
 </div>
+
+<!-- New Bank Account Modal -->
+<div class="modal fade" id="newBankAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form action="{{ route('bank-accounts.store') }}" method="POST">
+                @csrf
+                <div class="modal-header">
+                    <h5 class="modal-title">Link New Bank Account</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Account Name field - This was missing -->
+                    <div class="mb-3">
+                        <label class="form-label">Account Name</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Bank Name</label>
+                        <input type="text" name="bank_name" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Account Number</label>
+                        <input type="text" name="account_number" class="form-control" required>
+                    </div>
+
+                    <!-- Current Balance field -->
+                    <div class="mb-3">
+                        <label class="form-label">Current Balance</label>
+                        <input type="number" name="current_balance" class="form-control" step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 @endsection

@@ -74,7 +74,6 @@ Route::middleware(['auth'])->group(function () {
 });
 Route::get('accounts/{account}/download', [AccountController::class, 'download'])->name('accounts.download');
 
-Route::post('/bank-accounts/{account}/deposit', [BankAccountController::class, 'deposit'])->name('bank-accounts.deposit');
 
 
 // Route::post('/bank-accounts/{account}/deposit', [TransactionController::class, 'deposit'])->name('bank-accounts.deposit');
@@ -130,6 +129,7 @@ Route::middleware(['auth'])->group(function () {
         
 
     // Bank Accounts
+    Route::post('/bank-accounts', [BankAccountController::class, 'store'])->name('bank-accounts.store');
     Route::resource('bank-accounts', BankAccountController::class);
     Route::post('/bank-accounts/{account}/deposit', [BankAccountController::class, 'deposit'])
         ->name('bank-accounts.deposit');

@@ -19,12 +19,17 @@ class BankAccountController extends Controller
             'name' => 'required|string|max:255',
             'account_number' => 'required|string|max:255',
             'bank_name' => 'required|string|max:255',
-            'balance' => 'required|numeric'
+            'current_balance' => 'required|numeric|min:0'
         ]);
 
+        $validated['last_synced_at'] = now();
+
         BankAccount::create($validated);
-        return redirect()->route('bank-accounts.index')->with('success', 'Bank account created successfully');
+
+        return redirect()->route('bank-accounts.index')
+            ->with('success', 'Bank account created successfully');
     }
+
 
     public function sync(BankAccount $account)
     {
